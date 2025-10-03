@@ -11,11 +11,11 @@ public class MyDataSource {
     private final String url;
     private final String username;
     private final String password;
-    private final String maxConnections;
+    private final int maxConnections;
     private final Duration timeout;
     private final List<String> options;
 
-    public MyDataSource(String url, String username, String password, String maxConnections, Duration timeout, List<String> options) {
+    public MyDataSource(String url, String username, String password, int maxConnections, Duration timeout, List<String> options) {
         this.url = url;
         this.username = username;
         this.password = password;

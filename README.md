@@ -32,11 +32,11 @@ public class MyDataSource {
     private final String url;
     private final String username;
     private final String password;
-    private final String maxConnections;
+    private final int maxConnections;
     private final Duration timeout;
     private final List<String> options;
 
-    public MyDataSource(String url, String username, String password, String maxConnections, Duration timeout, List<String> options) {
+    public MyDataSource(String url, String username, String password, int maxConnections, Duration timeout, List<String> options) {
         this.url = url;
         this.username = username;
         this.password = password;
@@ -75,7 +75,7 @@ public class MyDataSourceConfig {
         Duration timeout = env.getProperty("my.datasource.etc.timeout", Duration.class);
         List<String> options = env.getProperty("my.datasource.etc.options", List.class);
 
-        return new MyDataSource(url, username, password, String.valueOf(maxConnections), timeout, options);
+        return new MyDataSource(url, username, password, maxConnections, timeout, options);
     }
 }
 ```
@@ -130,19 +130,133 @@ public class ExternalReadApplication {
 
 스프링은 `@Value` 를 통해서 외부 설정값을 주입 받는 더욱 편리한 기능을 제공한다.
 
+# 외부설정 사용 - @Value
 
+`@Value` 를 사용하면 외부 설정값을 편리하게 주입받을 수 있다.
 
+참고로 `@Value` 도 내부에서는 `Environment` 를 사용한다.
 
+```java
 
+@Slf4j
+@Configuration
+public class MyDataSourceValueConfig {
 
+    @Value("${my.datasource.url}")
+    private String url;
+    @Value("${my.datasource.username}")
+    private String username;
+    @Value("${my.datasource.password}")
+    private String password;
+    @Value("${my.datasource.etc.max-connections}")
+    private int maxConnections;
+    @Value("${my.datasource.etc.timeout}")
+    private Duration timeout;
+    @Value("${my.datasource.etc.options}")
+    private List<String> options;
 
+    @Bean
+    public MyDataSource myDataSource() {
 
+        return new MyDataSource(url, username, password, maxConnections, timeout, options);
+    }
 
+    @Bean
+    public MyDataSource myDataSource2(
+        @Value("${my.datasource.url}") String url,
+        @Value("${my.datasource.username}") String username,
+        @Value("${my.datasource.password}") String password,
+        @Value("${my.datasource.etc.max-connections}") int maxConnections,
+        @Value("${my.datasource.etc.timeout}") Duration timeout,
+        @Value("${my.datasource.etc.options}") List<String> options
+    ) {
+        return new MyDataSource(url, username, password, maxConnections, timeout, options);
+    }
+}
 
+@Import(MyDataSourceValueConfig.class)
+//@Import(MyDataSourceConfig.class)
+@SpringBootApplication(scanBasePackages = "hello.datasource")
+public class ExternalReadApplication {
 
+    static void main(String[] args) {
+        SpringApplication.run(ExternalReadApplication.class, args);
+    }
 
+}
+```
 
+**결과**
 
+**기본값**
+
+만약 키를 찾지 못할 경우 코드에서 기본값을 사용하려면 다음과 같이 `:` 뒤에 기본값을 적어주면 된다.
+
+예) `@Value("${my.datasource.etc.max-connection:1}")` : `key` 가 없는 경우 `1` 을 사용한 다.
+
+```java
+
+@Slf4j
+@Configuration
+public class MyDataSourceValueConfig {
+
+    @Value("${my.datasource.url}")
+    private String url;
+    @Value("${my.datasource.username}")
+    private String username;
+    @Value("${my.datasource.password}")
+    private String password;
+    @Value("${my.datasource.etc.max-connections:10}")
+    private int maxConnections;
+    @Value("${my.datasource.etc.timeout}")
+    private Duration timeout;
+    @Value("${my.datasource.etc.options}")
+    private List<String> options;
+
+    @Bean
+    public MyDataSource myDataSource() {
+
+        return new MyDataSource(url, username, password, maxConnections, timeout, options);
+    }
+
+    @Bean
+    public MyDataSource myDataSource2(
+        @Value("${my.datasource.url}") String url,
+        @Value("${my.datasource.username}") String username,
+        @Value("${my.datasource.password}") String password,
+        @Value("${my.datasource.etc.max-connections:20}") int maxConnections,
+        @Value("${my.datasource.etc.timeout}") Duration timeout,
+        @Value("${my.datasource.etc.options}") List<String> options
+    ) {
+        return new MyDataSource(url, username, password, maxConnections, timeout, options);
+    }
+}
+```
+
+```properties
+my.datasource.url=local.db.com
+my.datasource.username=local_user
+my.datasource.password=local_password
+#my.datasource.etc.max-connections=1
+my.datasource.etc.timeout=3500ms
+my.datasource.etc.options=CACHE,ADMIN
+```
+
+**결과**
+
+**정리**
+
+`application.properties` 에 필요한 외부 설정을 추가하고, `@Value` 를 통해서 해당 값들을 읽어서, `MyDataSource` 를 만들었다.
+
+**단점**
+
+`@Value` 를 사용하는 방식도 좋지만, `@Value` 로 하나하나 외부 설정 정보의 키 값을 입력받고, 주입 받아와야 하는 부분이 번거롭다.
+
+그리고 설정 데이터를 보면 하나하나 분리되어 있는 것이 아니라 정보의 묶음으로 되어있다.
+
+여기서는 `my.datasource` 부분으로 묶여있다.
+
+이런 부분을 객체로 변환해서 사용할 수 있다면 더 편리하고 더 좋을 것이다.
 
 
 

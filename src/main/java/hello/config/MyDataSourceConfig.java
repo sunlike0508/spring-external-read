@@ -27,6 +27,6 @@ public class MyDataSourceConfig {
         Duration timeout = env.getProperty("my.datasource.etc.timeout", Duration.class);
         List<String> options = env.getProperty("my.datasource.etc.options", List.class);
 
-        return new MyDataSource(url, username, password, String.valueOf(maxConnections), timeout, options);
+        return new MyDataSource(url, username, password, maxConnections, timeout, options);
     }
 }
