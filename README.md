@@ -759,6 +759,8 @@ public class MyDataSourcePropertiesV3 {
 }
 ```
 
+**정상 결과**
+
 <img width="605" height="254" alt="Screenshot 2025-10-04 at 01 07 26" src="https://github.com/user-attachments/assets/3ff8eb15-9a20-4ab0-9daf-fc3dbfb5f2b8" />
 
 **다음과 같이 오류를 내보자**
@@ -786,10 +788,10 @@ my.datasource.etc.timeout=350000000ms
 my.datasource.etc.options=CACHE,ADMIN
 ```
 
-<img width="552" height="296" alt="Screenshot 2025-10-04 at 01 09 33" src="https://github.com/user-attachments/assets/fa615ac3-62b9-461c-a7ac-f2bb21de9268" />
-<img width="1021" height="296" alt="Screenshot 2025-10-04 at 01 08 04" src="https://github.com/user-attachments/assets/61a03438-3bbe-4890-937b-4438e2004d28" />
+**오류 결과**
 <img width="1026" height="302" alt="Screenshot 2025-10-04 at 01 07 48" src="https://github.com/user-attachments/assets/7d94c633-1f5e-4e45-9c97-2003873f7126" />
-
+<img width="1021" height="296" alt="Screenshot 2025-10-04 at 01 08 04" src="https://github.com/user-attachments/assets/61a03438-3bbe-4890-937b-4438e2004d28" />
+<img width="552" height="296" alt="Screenshot 2025-10-04 at 01 09 33" src="https://github.com/user-attachments/assets/fa615ac3-62b9-461c-a7ac-f2bb21de9268" />
 
 `jakarta.validation.constraints.Max`
 
