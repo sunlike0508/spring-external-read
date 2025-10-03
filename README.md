@@ -623,6 +623,43 @@ public class MyDataSourcePropertiesV2 {
 
     }
 }
+
+@Slf4j
+@EnableConfigurationProperties(MyDataSourcePropertiesV3.class)
+public class MyDataSourceConfigV3 {
+
+    private final MyDataSourcePropertiesV3 properties;
+
+    public MyDataSourceConfigV3(MyDataSourcePropertiesV3 properties) {
+        this.properties = properties;
+    }
+
+    @Bean
+    public MyDataSource myDataSource() {
+        return new MyDataSource(properties.getUrl(),
+            properties.getUsername(),
+            properties.getPassword(),
+            properties.getEtc().maxConnections(),
+            properties.getEtc().timeout(),
+            properties.getEtc().options()
+        );
+    }
+}
+
+//@Import(MyDataSourceValueConfig.class)
+//@Import(MyDataSourceConfig.class)
+//@Import(MyDataSourceConfigV1.class)
+//@Import(MyDataSourceConfigV2.class)
+@Import(MyDataSourceConfigV3.class)
+@SpringBootApplication(scanBasePackages = "hello.datasource")
+@ConfigurationPropertiesScan
+public class ExternalReadApplication {
+
+    static void main(String[] args) {
+        SpringApplication.run(ExternalReadApplication.class, args);
+    }
+
+}
 ```
 
 ```properties
@@ -667,6 +704,135 @@ my.datasource.password=local_password
 예를 들어서 `max-connection` 의 값을 `0` 으로 설정하면 커넥션이 하나도 만들어지지 않는 심각한 문제가 발생한다고 가정해보자.
 
 `max-connection` 은 최소 `1` 이상으로 설정하지 않으면 애플리케이션 로딩 시점에 예외를 발생시켜서 빠르게 문제를 인지할 수 있도록 하고 싶다.
+
+# 외부설정 사용 - @ConfigurationProperties 검증
+
+`@ConfigurationProperties` 를 통해서 숫자가 들어가야 하는 부분에 문자가 입력되는 문제와 같은 타입이 맞지 않는 데이터를 입력하는 문제는 예방할 수 있다.
+
+그런데 문제는 숫자의 범위라던가, 문자의 길이 같은 부분은 검증이 어렵다.
+
+예를 들어서 최대 커넥션 숫자는 최소`1` 최대 `999` 라는 범위를 가져야 한다면 어떻게 검증할 수 있을까?
+
+이메일을 외부 설정에 입력했는데, 만약 이메일 형식에 맞지 않는다면 어떻게 검증할 수 있을까?
+
+개발자가 직접 하나하나 검증 코드를 작성해도 되지만, 자바에는 자바 빈 검증기(java bean validation)이라는 훌륭한 표준 검증기가 제공된다.
+
+`@ConfigurationProperties` 은 자바 객체이기 때문에 스프링이 자바 빈 검증기를 사용할 수 있도록 지원한다.
+
+자바 빈 검증기를 사용하려면 `spring-boot-starter-validation` 이 필요하다.
+
+`build.gradle` 에 다음 코드 를 추가하자.
+
+```groovy
+implementation 'org.springframework.boot:spring-boot-starter-validation' //추가
+```
+
+검증기를 추가해서 `ConfigurationProperties` 을 만들어보자.
+
+```java
+
+@Getter
+@ConfigurationProperties("my.datasource")
+@Validated
+public class MyDataSourcePropertiesV3 {
+
+    @NotEmpty
+    private final String url;
+    @NotEmpty
+    private final String username;
+    @NotEmpty
+    private final String password;
+    private final Etc etc;
+
+    public MyDataSourcePropertiesV3(String url, String username, String password, Etc etc) {
+        this.url = url;
+        this.username = username;
+        this.password = password;
+        this.etc = etc;
+    }
+
+    public record Etc(@Min(1) @Max(999) int maxConnections,
+                      @DurationMin(seconds = 1) @DurationMax(seconds = 60) Duration timeout,
+                      List<String> options) {
+
+    }
+}
+```
+
+**다음과 같이 오류를 내보자**
+
+```properties
+my.datasource.url=local.db.com
+my.datasource.username=local_user
+my.datasource.password=local_password
+my.datasource.etc.max-connections=0
+my.datasource.etc.timeout=3500ms
+my.datasource.etc.options=CACHE,ADMIN
+!---
+my.datasource.url=local.db.com
+my.datasource.username=local_user
+my.datasource.password=local_password
+my.datasource.etc.max-connections=1000
+my.datasource.etc.timeout=3500ms
+my.datasource.etc.options=CACHE,ADMIN
+!--
+my.datasource.url=local.db.com
+my.datasource.username=local_user
+my.datasource.password=local_password
+my.datasource.etc.max-connections=1000
+my.datasource.etc.timeout=350000000ms
+my.datasource.etc.options=CACHE,ADMIN
+```
+
+`jakarta.validation.constraints.Max`
+
+패키지 이름에 `jakarta.validation` 으로 시작하는 것은 자바 표준 검증기에서 지원하는 기능이다.
+
+`org.hibernate.validator.constraints.time.DurationMax`
+
+패키지 이름에 `org.hibernate.validator` 로 시작하는 것은 자바 표준 검증기에서 아직 표준화 된 기능은 아니고, 하이버네이트 검증기라는 표준 검증기의 구현체에서 직접 제공하는 기능이다.
+
+대부분 하이버네이트 검증기를 사용하므로 이 부분이 크게 문제가 되지는 않는다.
+
+`ConfigurationProperties` 덕분에 타입 안전하고, 또 매우 편리하게 외부 설정을 사용할 수 있다.
+
+그리고 검증기 덕분에 쉽고 편리하게 설정 정보를 검증할 수 있다.
+
+가장 좋은 예외는 컴파일 예외, 그리고 애플리케이션 로딩 시점에 발생하는 예외이다.
+
+가장 나쁜 예외는 고객 서비스 중에 발생하는 런타임 예외이다.
+
+**ConfigurationProperties 장점**
+
+외부 설정을 객체로 편리하게 변환해서 사용할 수 있다.
+
+외부 설정의 계층을 객체로 편리하게 표현할 수 있다.
+
+외부 설정을 타입 안전하게 사용할 수 있다.
+
+검증기를 적용할 수 있다.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
