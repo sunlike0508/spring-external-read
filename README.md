@@ -556,6 +556,8 @@ public class ExternalReadApplication {
 
 **결과**
 
+<img width="606" height="330" alt="Screenshot 2025-10-04 at 00 42 20" src="https://github.com/user-attachments/assets/815b7140-828d-4519-99d4-3f13f4f5e0f5" />
+
 ```java
 
 @Getter
@@ -590,6 +592,8 @@ my.datasource.etc.timeout=3500ms
 ```
 
 **결과**
+
+<img width="451" height="191" alt="Screenshot 2025-10-04 at 00 45 56" src="https://github.com/user-attachments/assets/c491600a-fcc8-4ccb-8a34-cf0a79987290" />
 
 생성자를 만들어 두면 생성자를 통해서 설정 정보를 주입한다.
 
@@ -631,6 +635,8 @@ my.datasource.password=local_password
 ```
 
 **결과**
+
+<img width="734" height="252" alt="Screenshot 2025-10-04 at 00 50 58" src="https://github.com/user-attachments/assets/047737d7-a0e8-455e-852e-fd139cd4bfb1" />
 
 `@DefaultValue Etc etc` : `etc` 를 찾을 수 없을 경우 `Etc` 객체를 생성하고 내부에 들어가는 값은 비워둔다. (`null` , `0` )
 
