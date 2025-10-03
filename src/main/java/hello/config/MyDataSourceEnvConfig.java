@@ -10,11 +10,11 @@ import org.springframework.core.env.Environment;
 
 @Slf4j
 @Configuration
-public class MyDataSourceConfig {
+public class MyDataSourceEnvConfig {
 
     private final Environment env;
 
-    public MyDataSourceConfig(Environment env) {
+    public MyDataSourceEnvConfig(Environment env) {
         this.env = env;
     }
 
