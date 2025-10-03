@@ -117,6 +117,8 @@ public class ExternalReadApplication {
 
 **결과**
 
+<img width="629" height="232" alt="Screenshot 2025-10-03 at 17 52 50" src="https://github.com/user-attachments/assets/5a244241-12e2-4a30-891a-6d29afe2e87d" />
+
 **정리**
 `application.properties` 에 필요한 외부 설정을 추가하고, `Environment` 를 통해서 해당 값들을 읽어서, `MyDataSource` 를 만들었다.
 
