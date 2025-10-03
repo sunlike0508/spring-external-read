@@ -346,11 +346,11 @@ public class ExternalReadApplication {
 
 이렇게 하면 해당 클래 스는 스프링 빈으로 등록되고, 필요한 곳에서 주입 받아서 사용할 수 있다.
 
-`private final MyDataSourcePropertiesV1 properties` 설정 속성을 생성자를 통해 주입 받 아서 사용한다.
+`private final MyDataSourcePropertiesV1 properties` 설정 속성을 생성자를 통해 주입 받아서 사용한다.
 
 **결과**
 
-<<사진1>>
+<img width="597" height="231" alt="Screenshot 2025-10-03 at 19 02 34" src="https://github.com/user-attachments/assets/470ab093-8e19-45a0-b07b-3eb46be10585" />
 
 **타입 안전**
 
@@ -369,7 +369,7 @@ my.datasource.etc.options=CACHE,ADMIN
 
 **결과**
 
-<<사진1>>
+<img width="973" height="270" alt="Screenshot 2025-10-03 at 19 03 24" src="https://github.com/user-attachments/assets/b536aa19-6bcc-4212-b101-2435672db695" />
 
 실행 결과를 보면 숫자가 들어와야 하는데 문자가 들어와서 오류가 발생한 것을 확인할 수 있다.
 
@@ -431,6 +431,10 @@ public class MyDataSourceConfigV1 {
 
 **결과**
 
+<img width="1256" height="296" alt="Screenshot 2025-10-03 at 23 38 56" src="https://github.com/user-attachments/assets/4be6a70e-f974-4f34-ab70-2ad710054011" />
+
+**메인에 @ConfigurationPropertiesScan 추가**
+
 ```java
 
 @Import(MyDataSourceConfigV1.class)
@@ -446,6 +450,8 @@ public class ExternalReadApplication {
 ```
 
 **결과**
+
+<img width="419" height="268" alt="Screenshot 2025-10-03 at 23 39 51" src="https://github.com/user-attachments/assets/9fe0f172-86e5-4d8c-84a3-d89888bd936d" />
 
 빈을 직접 등록하는 것과 컴포넌트 스캔을 사용하는 차이와 비슷하다.
 
