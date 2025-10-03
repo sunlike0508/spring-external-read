@@ -188,6 +188,8 @@ public class ExternalReadApplication {
 
 **결과**
 
+<img width="800" height="345" alt="Screenshot 2025-10-03 at 18 31 47" src="https://github.com/user-attachments/assets/078c3f37-324f-4649-85a7-90347ad67040" />
+
 **기본값**
 
 만약 키를 찾지 못할 경우 코드에서 기본값을 사용하려면 다음과 같이 `:` 뒤에 기본값을 적어주면 된다.
@@ -243,6 +245,8 @@ my.datasource.etc.options=CACHE,ADMIN
 ```
 
 **결과**
+
+<img width="633" height="355" alt="Screenshot 2025-10-03 at 18 38 08" src="https://github.com/user-attachments/assets/04d3b983-063c-4362-8fae-0da81b4e0684" />
 
 **정리**
 
