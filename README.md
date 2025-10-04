@@ -923,6 +923,10 @@ my:
 
 ```
 
+<img width="559" height="307" alt="Screenshot 2025-10-04 at 17 17 36" src="https://github.com/user-attachments/assets/aa8ef567-6098-49ef-a7c1-7ecddf831957" />
+
+<img width="582" height="264" alt="Screenshot 2025-10-04 at 17 15 41" src="https://github.com/user-attachments/assets/74c70542-d7a1-408b-9e3f-a4c6c725dc91" />
+
 `yml` 은 `---` dash( `-` ) 3개를 사용해서 논리 파일을 구분한다.
 
 `spring.config.active.on-profile` 을 사용해서 프로필을 적용할 수 있다.
