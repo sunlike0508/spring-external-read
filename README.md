@@ -1004,6 +1004,10 @@ public class ExternalReadApplication {
 
 `ApplicationRunner` 인터페이스를 사용하면 스프링은 빈 초기화가 모두 끝나고 애플리케이션 로딩이 완료되는 시 점에 `run(args)` 메서드를 호출해준다.
 
+<img width="605" height="298" alt="Screenshot 2025-10-04 at 17 29 41" src="https://github.com/user-attachments/assets/079f003b-9041-45e2-a01b-9f1a140f5811" />
+<img width="628" height="302" alt="Screenshot 2025-10-04 at 17 29 50" src="https://github.com/user-attachments/assets/6e0e85d6-fec7-486e-8015-789f77dd7bfe" />
+
+
 ## @Profile의 정체
 
 ```java
